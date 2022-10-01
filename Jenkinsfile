@@ -8,7 +8,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir("Curso-Microservicios/"){
-                    sh "mvn clean package"
+                    sh "docker build -t microservicios ."
                 }
             }
         }
