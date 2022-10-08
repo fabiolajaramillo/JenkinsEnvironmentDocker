@@ -52,7 +52,6 @@ pipeline {
         //          }
         //      }
         //  }
-
          stage('Liquibase') {
             steps {
                 dir("liquibase/"){
