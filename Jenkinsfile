@@ -59,5 +59,30 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Service') {
+            steps {
+                dir("GatligTest/"){
+                    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker_nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                        sh "docker login -u $USERNAME -p $PASSWORD 192.168.0.17:8083"
+                        sh 'docker stop microservicio || true'
+                        sh 'docker run -d --rm --name microservicio -e SPRING_PROFILES_ACTIVE=dev -p 8090:8090 192.168.0.17:8083/repository/docker-private/microservicio:latest'
+                    }
+                }
+            }
+        }
+        stage('Stress') {
+            steps {
+                sleep 5
+                dir("GatlingTest/"){
+                    sh 'mvn gatling:test -Dgatling.simulationClass=microservice.PingUsersSimulation'
+                }
+            }
+            post {
+                always {
+                    gatlingArchive()
+                }
+            }
+        }
+    }
      }
 }
