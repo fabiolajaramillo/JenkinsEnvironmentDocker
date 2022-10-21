@@ -35,23 +35,23 @@ pipeline {
         //      }
         //  }
  
-        //  stage('Build') {
-        //      steps {
-        //          dir("Curso-Microservicios/"){
-        //              sh "docker build -t microservicio ."
-        //          }
-        //      }
-        //  }
+         stage('Build') {
+             steps {
+                 dir("Curso-Microservicios/"){
+                     sh "docker build -t microservicio ."
+                 }
+             }
+         }
  
-        //   stage('Push Image') {
-        //      steps {
-        //          withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker_nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
-        //              sh "docker login -u $USERNAME -p $PASSWORD 192.168.0.6:8083"
-        //              sh "docker tag microservicio:latest 192.168.0.6:8083/repository/docker-private/microservicio:latest"
-        //              sh "docker push 192.168.0.6:8083/repository/docker-private/microservicio:latest"
-        //          }
-        //      }
-        //  }
+          stage('Push Image') {
+             steps {
+                 withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'docker_nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
+                     sh "docker login -u $USERNAME -p $PASSWORD 192.168.0.6:8083"
+                     sh "docker tag microservicio:latest 192.168.0.6:8083/repository/docker-private/microservicio:latest"
+                     sh "docker push 192.168.0.6:8083/repository/docker-private/microservicio:latest"
+                 }
+             }
+         }
          stage('Liquibase') {
             steps {
                 dir("liquibase/"){
